@@ -22,4 +22,9 @@ This repository is used to store some useful scripts for MD analysis.
 `python DCCM.py md.gro md.xtc`
 
 ## tpr2gro
-you should use `gmx dump` command to output readable file to use.
+you should use `gmx dump` command to convert `.tpr` file to readable `out` file.  
+Then use the command below:  
+**command:** 
+`python tpr2gro.py md.out`
+
+---
