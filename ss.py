@@ -55,7 +55,7 @@ for m,n in enumerate(ss_block):
         ax.add_patch(mpl_patches.Rectangle(((start%50)/50-0.001,0.025+(1-((start//50+1))*0.1)),(end-start+1)/50+0.001,0.003,color="gray")) 
         ax.text((start%50)/50+0.0005,0.05+(1-((start//50+1))*0.1)," ".join(res[start:end+1])+" ",size=fs,fontfamily="monospace",fontweight="bold")
         ax.text((start%50)/50,0.072+(1-((start//50+1))*0.1),"|",size=5,color="black")
-        ax.text((start%50)/50,0.085+(1-((start//50+1))*0.1),end,size=6,color="black")
+        ax.text((start%50)/50,0.085+(1-((start//50+1))*0.1),start+1,size=6,color="black")
     elif ss_type=="H":
         n_turns=np.ceil((end-start+1)/1.5)
         x_val=np.linspace((start%50)/50+0.0025,((end+0.95)%50)/50-0.0025,100)
@@ -63,12 +63,12 @@ for m,n in enumerate(ss_block):
         ax.plot(x_val,y_val,linewidth=2.4,color="orange",scalex=False, scaley=False)
         ax.text((start%50)/50+0.0005,0.05+(1-((start//50+1))*0.1)," ".join(res[start:end+1])+" ",size=fs,fontfamily="monospace",fontweight="bold")
         ax.text((start%50)/50,0.072+(1-((start//50+1))*0.1),"|",size=5,color="black")
-        ax.text((start%50)/50,0.085+(1-((start//50+1))*0.1),end,size=6,color="black")
+        ax.text((start%50)/50,0.085+(1-((start//50+1))*0.1),start+1,size=6,color="black")
     elif ss_type=="E":
         ax.add_patch(mpl_patches.Rectangle(((start%50)/50,0.01+(1-((start//50+1))*0.1)),(end-start+1)/50-0.0029,0.03,color="lightseagreen"))
         ax.text((start%50)/50+0.0005,0.05+(1-((start//50+1))*0.1)," ".join(res[start:end+1])+" ",size=fs,fontfamily="monospace",fontweight="bold")
         ax.text((start%50)/50,0.072+(1-((start//50+1))*0.1),"|",size=5,color="black")
-        ax.text((start%50)/50,0.085+(1-((start//50+1))*0.1),end,size=6,color="black")
+        ax.text((start%50)/50,0.085+(1-((start//50+1))*0.1),start+1,size=6,color="black")
 
 ax.text(((ss_block[-1][2]+1)%50)/50+0.005,0.019+(1-((ss_block[-1][2]//50+1))*0.1),"C loop",size=fs,fontfamily="monospace",color="gray")
 ax.text(((ss_block[-1][2])%50)/50,0.072+(1-((ss_block[-1][2]//50+1))*0.1),"|",size=5,color="black")
