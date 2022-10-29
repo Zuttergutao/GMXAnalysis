@@ -1,0 +1,272 @@
+# Figure
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+figure.figsize   : 12.8,6.4
+figure.dpi       : 300
+figure.edgecolor : w
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+
+
+figure.frameon : True
+figure.titlesize : large
+figure.titleweight : normal
+
+# Subplot
+figure.subplot.left    : 0.125     # the left side of the subplots of the figure
+figure.subplot.right   : 0.9       # the right side of the subplots of the figure
+figure.subplot.bottom  : 0.11      # the bottom of the subplots of the figure
+figure.subplot.top     : 0.88      # the top of the subplots of the figure
+figure.subplot.wspace  : 0.2       # the amount of width reserved for space between subplots
+figure.subplot.hspace  : 0.2       # the amount of height reserved for space between subplots
+
+ 
+
+# Font
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+font.family         : Times New Roman       
+font.style          : normal               # normal italic oblique
+font.weight         : 600                  # normal(400) bold(700)  100 200 300 ...900  
+font.size           : 24
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+font.variant        : normal               # normal small-caps
+font.stretch        : normal              # ultra-condensed extra-condensed condensed semi-condensed normal semi-expanded expanded extra-expanded ultra-expanded wider narrower
+
+# Lines setting
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+lines.linewidth   : 2        
+lines.linestyle   : -        # '-' 'solid' '--' 'dashed' '-.' 'dashdot' ':' 'dotted' ' ' 'none'
+lines.color       : lightgreen     
+lines.marker      :         # '.,ov^<>12348sp*hH+xXDd|_'
+markers.fillstyle : full     # full|left|right|bottom|top|none
+lines.markeredgewidth : 1.5  
+lines.markersize  : 15
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+lines.dash_joinstyle : round          # miter|round|bevel
+lines.dash_capstyle : butt            # butt|round|projecting
+lines.solid_joinstyle : round         # miter|round|bevel
+lines.solid_capstyle : projecting     # butt|round|projecting
+lines.antialiased : True              # render lines in antialiased (no jaggies)
+
+
+# Text
+text.color    : black
+
+# Axes
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+axes.facecolor      : w            # draw bgcolor
+axes.edgecolor      : k            # axes color
+axes.linewidth      : 1.5          # edge linewidth
+
+axes.titlesize      : 32           # title size
+axes.titleweight    : 600          # titleweight
+axes.titlepad       : 15           # padding between axes and title in points
+
+axes.labelsize      : 26
+axes.labelpad       : 10
+axes.labelweight    : 600
+axes.labelcolor     : k
+
+axes.spines.left   : True         # display axis spines
+axes.spines.bottom : True
+axes.spines.top    : True
+axes.spines.right  : True
+
+axes.xmargin        : 0.05
+axes.ymargin        : .05 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+polaraxes.grid      : True
+axes3d.grid         : True
+axes.grid          : False        # display grid
+axes.grid.axis     : both        # both x y
+axes.grid.which    : both       # major minor both
+axes.autolimit_mode : data 
+axes.unicode_minus  : True
+axes.formatter.offset_threshold : 4
+axes.axisbelow      : line         # draw axis gridlines and ticks below
+axes.formatter.limits : -7, 7      # use scientific notation if log10 of the axis range is smaller than the first or larger than the second
+axes.formatter.use_locale : False
+axes.formatter.use_mathtext : False
+axes.formatter.min_exponent: 0
+axes.formatter.useoffset      : True
+
+
+# Ticks
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+xtick.top            : False
+xtick.bottom         : True
+xtick.labeltop       : False
+xtick.labelbottom    : True
+xtick.major.size     : 6
+xtick.minor.size     : 5        
+xtick.major.width    : 2      
+xtick.minor.width    : 1      
+xtick.major.pad      : 6      
+xtick.minor.pad      : 5      
+xtick.color          : k       
+xtick.labelsize      : 20  
+xtick.direction      : out     
+xtick.minor.visible  : False   
+xtick.major.top      : True     
+xtick.major.bottom   : True     
+xtick.minor.top      : True     
+xtick.minor.bottom   : True     
+xtick.alignment      : center   
+
+ytick.left           : True   
+ytick.right          : False  
+ytick.labelleft      : True   
+ytick.labelright     : False  
+ytick.major.size     : 6    
+ytick.minor.size     : 5      
+ytick.major.width    : 2    
+ytick.minor.width    : 1    
+ytick.major.pad      : 6    
+ytick.minor.pad      : 5    
+ytick.color          : k      
+ytick.labelsize      : 20 
+ytick.direction      : out    
+ytick.minor.visible  : False 
+ytick.major.left     : True   
+ytick.major.right    : True   
+ytick.minor.left     : True   
+ytick.minor.right    : True   
+ytick.alignment      : center_baseline 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+
+
+# Legend
+legend.loc           : best
+legend.frameon       : True     
+legend.framealpha    : 0.8      
+legend.facecolor     : inherit  
+legend.edgecolor     : 1      
+legend.fancybox      : True              
+legend.shadow        : False    
+legend.numpoints     : 1       
+legend.scatterpoints : 1        
+legend.markerscale   : 1.0      
+legend.fontsize      : 24
+# Dimensions as fraction of fontsize:
+legend.borderpad     : 0.4      
+legend.labelspacing  : 0.2      
+legend.handlelength  : 2.0     
+legend.handleheight  : 0.7     
+legend.handletextpad : 0.8      
+legend.borderaxespad : 0.5      
+legend.columnspacing : 2.0      
+
+# CONTOUR PLOTS
+contour.negative_linestyle : dashed      # string or on-off ink sequence
+contour.corner_mask        : True        # True | False | legacy
+
+# ERRORBAR PLOTS
+errorbar.capsize : 0             # length of end cap on error bars in pixels
+
+# HISTOGRAM PLOTS
+hist.bins : 20  
+
+# SCATTER PLOTS
+scatter.marker : o               # The default marker type for scatter plots.
+
+# Figure layout
+figure.autolayout : False     # When True, automatically adjust subplot
+figure.constrained_layout.use: False      
+figure.constrained_layout.h_pad : 0.04167 
+figure.constrained_layout.w_pad : 0.04167 
+figure.constrained_layout.hspace : 0.02   
+figure.constrained_layout.wspace : 0.02   
+
+# Grids 
+grid.color       :   b0b0b0    ## grid color
+grid.linestyle   :   -         ## solid
+grid.linewidth   :   0.8       ## in points
+grid.alpha       :   1.0       ## transparency, between 0.0 and 1.0
+
+# Savefig
+savefig.dpi         : figure
+savefig.facecolor   : w
+savefig.edgecolor   : w
+savefig.format      : png
+savefig.bbox        : tight
+savefig.pad_inches  : 0.1
+savefig.transparent : False
+savefig.orientation : portrait
+
+# Patches
+patch.linewidth        : 1       # edge width in points.
+patch.facecolor        : C0
+patch.edgecolor        : k       # if forced, or patch is not filled
+patch.force_edgecolor  : False   # True to always use edgecolor
+patch.antialiased      : True    # render patches in antialiased (no jaggies)
+
+# HATCHES
+#hatch.color     : k
+#hatch.linewidth : 1.0
+
+# Boxplot
+#boxplot.notch       : False
+#boxplot.vertical    : True
+#boxplot.whiskers    : 1.5
+#boxplot.bootstrap   : None
+#boxplot.patchartist : False
+#boxplot.showmeans   : False
+#boxplot.showcaps    : True
+#boxplot.showbox     : True
+#boxplot.showfliers  : True
+#boxplot.meanline    : False
+
+#boxplot.flierprops.color           : k
+#boxplot.flierprops.marker          : o
+#boxplot.flierprops.markerfacecolor : none
+#boxplot.flierprops.markeredgecolor : k
+#boxplot.flierprops.markersize      : 6
+#boxplot.flierprops.linestyle       : none
+#boxplot.flierprops.linewidth       : 1.0
+
+#boxplot.boxprops.color     : k
+#boxplot.boxprops.linewidth : 1.0
+#boxplot.boxprops.linestyle : -
+
+#boxplot.whiskerprops.color     : k
+#boxplot.whiskerprops.linewidth : 1.0
+#boxplot.whiskerprops.linestyle : -
+
+#boxplot.capprops.color     : k
+#boxplot.capprops.linewidth : 1.0
+#boxplot.capprops.linestyle : -
+
+#boxplot.medianprops.color     : C1
+#boxplot.medianprops.linewidth : 1.0
+#boxplot.medianprops.linestyle : -
+
+#boxplot.meanprops.color           : C2
+#boxplot.meanprops.marker          : ^
+#boxplot.meanprops.markerfacecolor : C2
+#boxplot.meanprops.markeredgecolor : C2
+#boxplot.meanprops.markersize      :  6
+#boxplot.meanprops.linestyle       : --
+#boxplot.meanprops.linewidth       : 1.0
+
+
+# Latex
+text.usetex   : False              # true/false
+text.latex.preamble :     
+text.hinting : auto
+text.hinting_factor : 8 
+text.antialiased    : True
+mathtext.cal        : cursive
+mathtext.rm         : Times New Roman
+mathtext.tt         : monospace
+mathtext.it         : Times New Roman:italic
+mathtext.bf         : Times New Roman:bold
+mathtext.sf         : Times New Roman
+mathtext.fontset    : dejavusans
+mathtext.default : it
+
+# Dates
+date.autoformatter.year     : %Y
+date.autoformatter.month    : %Y-%m
+date.autoformatter.day      : %Y-%m-%d
+date.autoformatter.hour     : %m-%d %H
+date.autoformatter.minute   : %d %H:%M
+date.autoformatter.second   : %H:%M:%S
+date.autoformatter.microsecond   : %M:%S.%f
