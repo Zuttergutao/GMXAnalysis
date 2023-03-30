@@ -14,13 +14,13 @@ import psutil
 
 
 # Settings
-runcore=1            # 运行核数
+runcore=5            # 运行核数
 
 dt=1000 # ps
 
-tprpath="1ebz/topol.tpr"    # provide tpr or tpr dump file(.out)
-indexpath="1ebz/index.ndx"
-xtcpath="1ebz/traj.xtc"
+tprpath="topol.tpr"    # provide tpr or tpr dump file(.out)
+indexpath="index.ndx"
+xtcpath="md.xtc"
 
 
 # 如果提供了蛋白配体组名，则不使用组index
@@ -28,7 +28,7 @@ xtcpath="1ebz/traj.xtc"
 ligidx=2   
 proidx=1
 
-liggn="Ligand"      # 配体组名
+liggn="lig"      # 配体组名
 progn="Protein"      # 蛋白组名
 
 
@@ -273,7 +273,7 @@ if __name__=="__main__":
     idxnlist={}
     count=0
     for idxfline in idxflines:
-        tmp=re.findall(re.compile(r"\[([\s0-9a-zA-Z]+)\]"),idxfline)
+        tmp=re.findall(re.compile(r"\[([\-\_\+\=\s0-9a-zA-Z]+)\]"),idxfline)
         if tmp !=[]:
             idxarr.append(idxflines.index(idxfline))
             idxnlist[tmp[0].strip()]=count
@@ -518,7 +518,7 @@ if __name__=="__main__":
     fidx=np.array(total["functype"])
     qcharge=np.array(total["charge"])
 
-    resPBSAcomps=total.loc[:,["index","resid","resname"]]
+    resPBSAcomps=total.loc[comlist,["index","resid","resname"]]
     totalresPBSA=pd.DataFrame()
     totalPBSA=pd.DataFrame()
     ftlist=[]
