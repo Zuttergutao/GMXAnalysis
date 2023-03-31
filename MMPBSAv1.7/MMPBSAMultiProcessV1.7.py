@@ -14,9 +14,9 @@ import psutil
 
 
 # Settings
-runcore=5            # 运行核数
+runcore=16            # 运行核数
 
-dt=1000 # ps
+dt=100 # ps
 
 tprpath="topol.tpr"    # provide tpr or tpr dump file(.out)
 indexpath="index.ndx"
@@ -79,7 +79,7 @@ E0=8.854187817E-12   # 真空介电常数 F/m
 KB=1.380649E-23      # 玻尔兹曼常数 J/K
 EE=1.602176634E-19   # 电子电量 C
 NA=6.02E23         # 阿伏伽德罗常数
-MTA=1E10            # 米换算成埃
+MTA=1E9            # 米换算成纳米
 
 
 # 绘图设置
@@ -522,6 +522,11 @@ if __name__=="__main__":
     totalresPBSA=pd.DataFrame()
     totalPBSA=pd.DataFrame()
     ftlist=[]
+
+    prolistrick=np.insert(prolist,-1,liglist[0])
+    prolistrick.sort()
+    resInfo=total.loc[prolistrick,['resid','resname']]
+
     for i in traj.trajectory:
         if i.time%dt==0:
             ft=str(traj.trajectory.time/1000)
@@ -663,12 +668,12 @@ print apolEnergy {apollig} end
 
             #************************************************************************
             # Devye-huckel
-            lambdaD=math.sqrt((E0*sdie*KB*temp)/(1E3*pconc*NA*(math.pow(EE,2))*(math.pow(pcharge,2))+(1E3*nconc*NA*(math.pow(EE,2))*math.pow(ncharge,2))))*MTA
+            lambdaD=math.sqrt((E0*sdie*KB*temp)/((1E3*pconc*NA*math.pow(EE,2)*math.pow(pcharge,2))+(1E3*nconc*NA*math.pow(EE,2)*math.pow(ncharge,2))))*MTA
             DHele=[]
             for i in prolist:
                 tmp=0
                 for j in liglist:
-                    tmp+=qcharge[i]*qcharge[j]*138.935/(D[i,j]*pdie)*math.exp(-D[i,j]/lambdaD)
+                    tmp+=(qcharge[i]*qcharge[j]*138.935/(D[i,j]*pdie))*math.exp(-D[i,j]/lambdaD)
                 DHele.append(tmp/2)
             tDHele=np.sum(DHele)
             #************************************************************************
@@ -692,19 +697,17 @@ print apolEnergy {apollig} end
                 ele.append(tmp/2)
             tele=np.sum(ele)
 
-            prolistrick=np.insert(prolist,-1,liglist[0])
-            prolistrick.sort()
-            resInfo=total.loc[prolistrick,['resid','resname']]
+
             vdw.append(tvdw)
             ele.append(tele)
             DHele.append(tDHele)
-            resInfo['vdw']=vdw
-            resInfo['cou']=ele
-            resInfo["cou (with DH)"]=DHele
-            resInfo=resInfo.groupby('resid',sort=False).sum(numeric_only=True)
-            resInfo['MM']=resInfo["vdw"]+resInfo['cou']
-            resInfo["MM (with DH)"]=resInfo["vdw"]+resInfo['cou (with DH)']
+            resInfo['vdw {}'.format(ft)]=vdw
+            resInfo['cou {}'.format(ft)]=ele
+            resInfo["cou (with DH) {}".format(ft)]=DHele
+            resInfo['MM {}'.format(ft)]=resInfo["vdw {}".format(ft)]+resInfo["cou {}".format(ft)]
+            resInfo["MM (with DH) {}".format(ft)]=resInfo["vdw {}".format(ft)]+resInfo['cou (with DH) {}'.format(ft)]
 
+    resInfo=resInfo.groupby('resid',sort=False).sum(numeric_only=True)
 
     print("+","-"*80,"+")
     print("  {} Run apbs task in parallel.".format(datetime.now().replace(microsecond=0).strftime('%Y-%m-%d %H:%M:%S')))
@@ -806,9 +809,9 @@ print apolEnergy {apollig} end
         dmmpbsa[5]=gamma*dmmpbsa[5]+offset
         dPB=dmmpbsa[0]-dmmpbsa[1]-dmmpbsa[2]
         dSA=dmmpbsa[3]-dmmpbsa[4]-dmmpbsa[5]
-        dMMPBSA=resInfo["MM"].sum()+dPB+dSA
-        dMMPBSADH=resInfo["MM (with DH)"].sum()+dPB+dSA
-        dmmpbsa=np.append(dmmpbsa,[resInfo["vdw"].sum(),resInfo["cou"].sum(),resInfo["cou (with DH)"].sum(),resInfo["MM"].sum(),resInfo["MM (with DH)"].sum(),dPB,dSA,dMMPBSA,dMMPBSADH])
+        dMMPBSA=resInfo["MM {}".format(ft)].sum()+dPB+dSA
+        dMMPBSADH=resInfo["MM (with DH) {}".format(ft)].sum()+dPB+dSA
+        dmmpbsa=np.append(dmmpbsa,[resInfo["vdw {}".format(ft)].sum(),resInfo["cou {}".format(ft)].sum(),resInfo["cou (with DH) {}".format(ft)].sum(),resInfo["MM {}".format(ft)].sum(),resInfo["MM (with DH) {}".format(ft)].sum(),dPB,dSA,dMMPBSA,dMMPBSADH])
         totalPBSA=pd.concat([totalPBSA,pd.DataFrame(np.insert(dmmpbsa,0,ft).reshape(1,16),columns=["Time(ns)","PB_com","PB_pro","PB_lig","SA_com","SA_pro","SA_lig","vdw","cou","cou (with DH)","MM","MM (with DH)","dPB","dSA","MM-PBSA","MM-PBSA (with DH)"],index=["1"])])
         # print("*********************************************")
         # print(totalPBSA) 
@@ -826,11 +829,11 @@ print apolEnergy {apollig} end
 
         resPBSA=resPBSAcomps.drop_duplicates("resid",ignore_index=True).loc[:,["resid","resname"]]
         resPBSA.set_index("resid")
-        resPBSA["vdw"]=np.array(resInfo["vdw"])
-        resPBSA["cou"]=np.array(resInfo["cou"])
-        resPBSA["cou (with DH)"]=np.array(resInfo["cou (with DH)"])
-        resPBSA["MM"]=np.array(resInfo["MM"])
-        resPBSA["MM (with DH)"]=np.array(resInfo["MM (with DH)"])
+        resPBSA["vdw"]=np.array(resInfo["vdw {}".format(ft)])
+        resPBSA["cou"]=np.array(resInfo["cou {}".format(ft)])
+        resPBSA["cou (with DH)"]=np.array(resInfo["cou (with DH) {}".format(ft)])
+        resPBSA["MM"]=np.array(resInfo["MM {}".format(ft)])
+        resPBSA["MM (with DH)"]=np.array(resInfo["MM (with DH) {}".format(ft)])
         resPBSA["PB"]=np.array(resPBSAcomps.groupby("resid").sum({"PB":"sum","SA":"sum"})["PB"])
         resPBSA["SA"]=np.array(resPBSAcomps.groupby("resid").sum({"PB":"sum","SA":"sum"})["SA"])
         resPBSA.columns=[[ft+"ns",ft+"ns",ft+"ns",ft+"ns",ft+"ns",ft+"ns",ft+"ns",ft+"ns",ft+"ns"],["resid","resname","vdw","cou","cou (with DH)","MM","MM (with DH)","PB","SA"]]
@@ -954,6 +957,7 @@ print apolEnergy {apollig} end
     axes[2,0].tick_params(axis="y",direction="out")
     axes[2,0].legend(["MM","Delta_PB","Delta_SA","MMPBSA"],ncol=3,bbox_to_anchor=(0.5,-0.38),loc="center")
 
+    axes[2,1].minorticks_off()
     errkw={"ecolor":"black","elinewidth":1.0,"capthick":1.0,"capsize":5}
     axes[2,1].bar(totalPBSA.columns[[7,8,10,12,13,14]],totalPBSA.iloc[-2,[7,8,10,12,13,14]],yerr=totalPBSA.iloc[-1,[7,8,10,12,13,14]],error_kw=errkw,color=[colorset["Vdw"],colorset["Cou"],colorset["MM"],colorset["PB"],colorset["SA"],colorset["MMPBSA"]])
     axes[2,1].set_title("Avg. MM-PBSA Energy")
@@ -963,6 +967,7 @@ print apolEnergy {apollig} end
     axes[2,1].tick_params(axis="x",direction="out")
     axes[2,1].tick_params(axis="y",direction="out")
 
+    axes[3,0].minorticks_off()
     axes[3,0].bar(totalPBSA.columns[1:4],totalPBSA.iloc[-2,1:4],yerr=totalPBSA.iloc[-1,1:4],width=0.5,error_kw=errkw,color=[colorset["PBCom"],colorset["PBPro"],colorset["PBLig"]])
     axes[3,0].set_title("Avg. Com-Pro-Lig PB Energy")
     axes[3,0].set_xlabel("Energy Term")
@@ -971,6 +976,7 @@ print apolEnergy {apollig} end
     axes[3,0].tick_params(axis="x",direction="out")
     axes[3,0].tick_params(axis="y",direction="out")
 
+    axes[3,1].minorticks_off()
     axes[3,1].bar(totalPBSA.columns[4:7],totalPBSA.iloc[-2,4:7],yerr=totalPBSA.iloc[-1,4:7],width=0.5,error_kw=errkw,color=[colorset["SACom"],colorset["SAPro"],colorset["SALig"]])
     axes[3,1].set_title("Avg. Com-Pro-Lig SA Energy")
     axes[3,1].set_xlabel("Energy Term")
