@@ -12,15 +12,18 @@ from prettytable import PrettyTable
 import sys
 import psutil
 
+import warnings
+warnings.filterwarnings('ignore')
+
 
 # Settings
-runcore=16            # 运行核数
+runcore=10            # 运行核数
 
 dt=100 # ps
 
-tprpath="topol.tpr"    # provide tpr or tpr dump file(.out)
-indexpath="index.ndx"
-xtcpath="md.xtc"
+tprpath="1ebz/topol.tpr"    # provide tpr or tpr dump file(.out)
+indexpath="1ebz/index.ndx"
+xtcpath="1ebz/traj3.xtc"
 
 
 # 如果提供了蛋白配体组名，则不使用组index
@@ -28,8 +31,8 @@ xtcpath="md.xtc"
 ligidx=2   
 proidx=1
 
-liggn="lig"      # 配体组名
-progn="Protein"      # 蛋白组名
+liggn=""      # 配体组名
+progn=""      # 蛋白组名
 
 
 # elec
@@ -97,6 +100,7 @@ colorset={
     "Vdw": "#2CA02C",
     "Cou": "#FF7F0E",
     "MMPBSA": "#9467BD",
+    "dG":"#bd67bb",
 }
 # matplotlib绘图设置
 plt.rcParams["figure.dpi"] = 300                            # 输出图片dpi
@@ -848,11 +852,13 @@ print apolEnergy {apollig} end
     # 计算构象熵变 IE方法
     avgE=totalPBSA["MM"].iloc[:].mean()
     deltaE=totalPBSA["MM"].iloc[:]-avgE
-    K=8.314E-3 #KJ/(mol k)
+    K=8.314E-3 #kJ/(mol k)
     beta=1/(K*temp)
     TdS=(1/beta)*np.log(np.exp(beta*deltaE).mean())
-    totalPBSA["MM-PBSA"]=totalPBSA["MM-PBSA"]+TdS
-    totalPBSA["MM-PBSA (with DH)"]=totalPBSA["MM-PBSA (with DH)"]+TdS
+    totalPBSA["MM-PBSA"]=totalPBSA["MM-PBSA"]
+    totalPBSA["MM-PBSA (with DH)"]=totalPBSA["MM-PBSA (with DH)"]
+    totalPBSA["dG"]=totalPBSA["MM-PBSA"]+TdS
+    totalPBSA["dG (with DH)"]=totalPBSA["MM-PBSA (with DH)"]+TdS
     #***************************************************************************************
 
     # 输出不同时间残基能量贡献
@@ -900,10 +906,10 @@ print apolEnergy {apollig} end
 
     figs,axes=plt.subplots(7,2,figsize=(16,45))
 
-    axes[0,0].plot(totalPBSA["Time(ns)"].iloc[:-2],totalPBSA["MM-PBSA"].iloc[:-2], marker="o",color=colorset["MMPBSA"])
-    axes[0,0].set_title("MM-PBSA Energy Vs. Time")
+    axes[0,0].plot(totalPBSA["Time(ns)"].iloc[:-2],totalPBSA["dG"].iloc[:-2], marker="o",color=colorset["MMPBSA"])
+    axes[0,0].set_title("MM-PBSA Energy (dG) Vs. Time")
     axes[0,0].set_xlabel("Time (ns)")
-    axes[0,0].set_ylabel("E (KJ/mol)")
+    axes[0,0].set_ylabel("E (kJ/mol)")
     axes[0,0].yaxis.set_minor_locator(MultipleLocator(5))
     axes[0,0].tick_params(axis="x",direction="out")
     axes[0,0].tick_params(axis="y",direction="out")
@@ -915,7 +921,7 @@ print apolEnergy {apollig} end
     axes[0,1].plot(totalPBSA["Time(ns)"].iloc[:-2],totalPBSA["dPB"].iloc[:-2], marker=">",color=colorset["PB"])
     axes[0,1].set_title("PB Energy Vs. Time")
     axes[0,1].set_xlabel("Time (ns)")
-    axes[0,1].set_ylabel("E (KJ/mol)")
+    axes[0,1].set_ylabel("E (kJ/mol)")
     axes[0,1].yaxis.set_minor_locator(MultipleLocator(250))
     axes[0,1].tick_params(axis="x",direction="out")
     axes[0,1].tick_params(axis="y",direction="out")
@@ -927,7 +933,7 @@ print apolEnergy {apollig} end
     axes[1,0].plot(totalPBSA["Time(ns)"].iloc[:-2],totalPBSA["dSA"].iloc[:-2], marker=">",color=colorset["SA"])
     axes[1,0].set_title("SA Energy Vs. Time")
     axes[1,0].set_xlabel("Time (ns)")
-    axes[1,0].set_ylabel("E (KJ/mol)")
+    axes[1,0].set_ylabel("E (kJ/mol)")
     axes[1,0].yaxis.set_minor_locator(MultipleLocator(10))
     axes[1,0].tick_params(axis="x",direction="out")
     axes[1,0].tick_params(axis="y",direction="out")
@@ -938,7 +944,7 @@ print apolEnergy {apollig} end
     axes[1,1].plot(totalPBSA["Time(ns)"].iloc[:-2],totalPBSA["MM"].iloc[:-2], marker="*",color=colorset["MM"])
     axes[1,1].set_title("MM Energy Vs. Time")
     axes[1,1].set_xlabel("Time (ns)")
-    axes[1,1].set_ylabel("E (KJ/mol)")
+    axes[1,1].set_ylabel("E (kJ/mol)")
     axes[1,1].yaxis.set_minor_locator(MultipleLocator(10))
     axes[1,1].tick_params(axis="x",direction="out")
     axes[1,1].tick_params(axis="y",direction="out")
@@ -951,27 +957,29 @@ print apolEnergy {apollig} end
     axes[2,0].plot(totalPBSA["Time(ns)"].iloc[:-2],totalPBSA["MM-PBSA"].iloc[:-2], marker=">",color=colorset["MMPBSA"])
     axes[2,0].set_title("Energy Vs. Time")
     axes[2,0].set_xlabel("Time (ns)")
-    axes[2,0].set_ylabel("E (KJ/mol)")
+    axes[2,0].set_ylabel("E (kJ/mol)")
     axes[2,0].yaxis.set_minor_locator(MultipleLocator(40))
     axes[2,0].tick_params(axis="x",direction="out")
     axes[2,0].tick_params(axis="y",direction="out")
-    axes[2,0].legend(["MM","Delta_PB","Delta_SA","MMPBSA"],ncol=3,bbox_to_anchor=(0.5,-0.38),loc="center")
+    axes[2,0].legend(["MM","Delta_PB","Delta_SA","MM-PBSA"],ncol=3,bbox_to_anchor=(0.5,-0.38),loc="center")
+    
 
     axes[2,1].minorticks_off()
     errkw={"ecolor":"black","elinewidth":1.0,"capthick":1.0,"capsize":5}
     axes[2,1].bar(totalPBSA.columns[[7,8,10,12,13,14]],totalPBSA.iloc[-2,[7,8,10,12,13,14]],yerr=totalPBSA.iloc[-1,[7,8,10,12,13,14]],error_kw=errkw,color=[colorset["Vdw"],colorset["Cou"],colorset["MM"],colorset["PB"],colorset["SA"],colorset["MMPBSA"]])
     axes[2,1].set_title("Avg. MM-PBSA Energy")
     axes[2,1].set_xlabel("Energy Term")
-    axes[2,1].set_ylabel("E (KJ/mol)")
+    axes[2,1].set_ylabel("E (kJ/mol)")
     axes[2,1].yaxis.set_minor_locator(MultipleLocator(50))
     axes[2,1].tick_params(axis="x",direction="out")
     axes[2,1].tick_params(axis="y",direction="out")
+    axes[2,1].legend(["-TdS = {:.2f} (kJ/mol)".format(TdS)],bbox_to_anchor=(0.5,-0.38),fontsize=18,loc="center")
 
     axes[3,0].minorticks_off()
     axes[3,0].bar(totalPBSA.columns[1:4],totalPBSA.iloc[-2,1:4],yerr=totalPBSA.iloc[-1,1:4],width=0.5,error_kw=errkw,color=[colorset["PBCom"],colorset["PBPro"],colorset["PBLig"]])
     axes[3,0].set_title("Avg. Com-Pro-Lig PB Energy")
     axes[3,0].set_xlabel("Energy Term")
-    axes[3,0].set_ylabel("E (KJ/mol)")
+    axes[3,0].set_ylabel("E (kJ/mol)")
     axes[3,0].yaxis.set_minor_locator(MultipleLocator(500))
     axes[3,0].tick_params(axis="x",direction="out")
     axes[3,0].tick_params(axis="y",direction="out")
@@ -980,7 +988,7 @@ print apolEnergy {apollig} end
     axes[3,1].bar(totalPBSA.columns[4:7],totalPBSA.iloc[-2,4:7],yerr=totalPBSA.iloc[-1,4:7],width=0.5,error_kw=errkw,color=[colorset["SACom"],colorset["SAPro"],colorset["SALig"]])
     axes[3,1].set_title("Avg. Com-Pro-Lig SA Energy")
     axes[3,1].set_xlabel("Energy Term")
-    axes[3,1].set_ylabel("E (KJ/mol)")
+    axes[3,1].set_ylabel("E (kJ/mol)")
     axes[3,1].yaxis.set_minor_locator(MultipleLocator(20))
     axes[3,1].tick_params(axis="x",direction="out")
     axes[3,1].tick_params(axis="y",direction="out")
@@ -990,7 +998,7 @@ print apolEnergy {apollig} end
     axes[4,0].plot(avgresPBSA["resid"][:-1],avgresPBSA["vdw"][:-1],linewidth=1.5,color=colorset["Vdw"])
     axes[4,0].set_title("Avg. Res MM = Cou + Vdw Energy")
     axes[4,0].set_xlabel("Resid")
-    axes[4,0].set_ylabel("E (KJ/mol)")
+    axes[4,0].set_ylabel("E (kJ/mol)")
     axes[4,0].minorticks_on()
     axes[4,0].tick_params(axis="x",direction="out")
     axes[4,0].tick_params(axis="y",direction="out")
@@ -1003,7 +1011,7 @@ print apolEnergy {apollig} end
     axes[4,1].plot(avgresPBSA["resid"][:-1],avgresPBSA["MM"][:-1],color=colorset["MM"])
     axes[4,1].set_title("Avg. Res MM Energy")
     axes[4,1].set_xlabel("Resid")
-    axes[4,1].set_ylabel("E (KJ/mol)")
+    axes[4,1].set_ylabel("E (kJ/mol)")
     axes[4,1].minorticks_on()
     axes[4,1].tick_params(axis="x",direction="out")
     axes[4,1].tick_params(axis="y",direction="out")
@@ -1016,7 +1024,7 @@ print apolEnergy {apollig} end
     axes[5,0].plot(avgresPBSA["resid"][:-1],avgresPBSA["vdw"][:-1],color=colorset["Vdw"])
     axes[5,0].set_title("Avg. Res Vdw Energy")
     axes[5,0].set_xlabel("Resid")
-    axes[5,0].set_ylabel("E (KJ/mol)")
+    axes[5,0].set_ylabel("E (kJ/mol)")
     axes[5,0].minorticks_on()
     axes[5,0].tick_params(axis="x",direction="out")
     axes[5,0].tick_params(axis="y",direction="out")
@@ -1029,7 +1037,7 @@ print apolEnergy {apollig} end
     axes[5,1].plot(avgresPBSA["resid"][:-1],avgresPBSA["cou"][:-1],color=colorset["Cou"])
     axes[5,1].set_title("Avg. Res Cou Energy")
     axes[5,1].set_xlabel("Resid")
-    axes[5,1].set_ylabel("E (KJ/mol)")
+    axes[5,1].set_ylabel("E (kJ/mol)")
     axes[5,1].minorticks_on()
     axes[5,1].tick_params(axis="x",direction="out")
     axes[5,1].tick_params(axis="y",direction="out")
@@ -1042,7 +1050,7 @@ print apolEnergy {apollig} end
     axes[6,0].plot(avgresPBSA["resid"][:-1],avgresPBSA["PB"][:-1],color=colorset["PB"])
     axes[6,0].set_title("Avg. Res PB Energy")
     axes[6,0].set_xlabel("Resid")
-    axes[6,0].set_ylabel("E (KJ/mol)")
+    axes[6,0].set_ylabel("E (kJ/mol)")
     axes[6,0].minorticks_on()
     axes[6,0].tick_params(axis="x",direction="out")
     axes[6,0].tick_params(axis="y",direction="out")
@@ -1055,7 +1063,7 @@ print apolEnergy {apollig} end
     axes[6,1].plot(avgresPBSA["resid"][:-1],avgresPBSA["SA"][:-1],color=colorset["SA"])
     axes[6,1].set_title("Avg. Res SA Energy",fontstyle="normal")
     axes[6,1].set_xlabel("Resid")
-    axes[6,1].set_ylabel("E (KJ/mol)")
+    axes[6,1].set_ylabel("E (kJ/mol)")
     axes[6,1].minorticks_on()
     axes[6,1].tick_params(axis="x",direction="out")
     axes[6,1].tick_params(axis="y",direction="out")
@@ -1077,9 +1085,9 @@ print apolEnergy {apollig} end
     print("+","-"*80,"+")
     print("  -TdS={} kJ/mol.".format(TdS))
     print("+","-"*80,"+","\n")
-    ptable=PrettyTable(['Time (ns)', 'MM (KJ/mol)','MM with DH (KJ/mol)', 'PB (KJ/mol)', 'SA (KJ/mol)', 'MM-PBSA (KJ/mol)','MM-PBSA with DH (KJ/mol)'])
+    ptable=PrettyTable(['Time (ns)','vdw (kJ/mol)', 'cou (kJ/mol)','cou-DH (kJ/mol)', 'MM (kJ/mol)','MM-DH (kJ/mol)', 'dPB (kJ/mol)', 'dSA (kJ/mol)', 'MM-PBSA (kJ/mol)','dG (kJ/mol)'])
     for i in range(totalPBSA.shape[0]):
-        ptable.add_row([totalPBSA["Time(ns)"].iloc[i],totalPBSA["MM"].iloc[i],totalPBSA["MM (with DH)"].iloc[i],totalPBSA["dPB"].iloc[i],totalPBSA["dSA"].iloc[i],totalPBSA["MM-PBSA"].iloc[i],totalPBSA["MM-PBSA (with DH)"].iloc[i]])
+        ptable.add_row([totalPBSA["Time(ns)"].iloc[i],totalPBSA["vdw"].iloc[i],totalPBSA["cou"].iloc[i],totalPBSA["cou (with DH)"].iloc[i],totalPBSA["MM"].iloc[i],totalPBSA["MM (with DH)"].iloc[i],totalPBSA["dPB"].iloc[i],totalPBSA["dSA"].iloc[i],totalPBSA["MM-PBSA"].iloc[i],totalPBSA["dG"].iloc[i]])
     print(ptable,"\n")
 
     print("+","-"*80,"+")
@@ -1097,7 +1105,7 @@ print apolEnergy {apollig} end
     print("  User can get more detailed data from the following generated files: ")
     print("  (\"avgresMMPBSA.csv\" \"TotalresDecomps.csv\" \"TotalMMPBSA.csv\").")
     print("  The script also generates plots plotted with default parameters.")
-    print("  gmxMMPBSa.py, Version 1.7, release date: 2023-Mar-25")
+    print("  gmxMMPBSA.py, Version 1.7, release date: 2023-Mar-25")
     print("  Developer: CASEA (Tianjin University)")
     print("  Github Repository: https://github.com/Zuttergutao/GMXAnalysis")
     print("  Have a nice day!")
