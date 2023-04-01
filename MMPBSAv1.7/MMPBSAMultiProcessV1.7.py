@@ -664,7 +664,9 @@ print apolEnergy {apollig} end
             apbs.write(pe)
             apbs.close()
             ftlist.append(ft)
-
+		
+	    Atomcoord=Atomcoord[comlist]  # 过渡 有几率出错 当使用未处理轨迹时，因原子数过大，数组可能因需要内存过大而无法创建
+	
             TmpArr=np.tile(Atomcoord,Atomcoord.shape[0])-Atomcoord.flatten()
             TmpArr=TmpArr.reshape(Atomcoord.shape[0],Atomcoord.shape[0],3)
             D=np.linalg.norm(TmpArr,axis=2)
