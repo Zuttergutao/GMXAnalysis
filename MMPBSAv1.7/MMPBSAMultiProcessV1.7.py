@@ -17,20 +17,15 @@ warnings.filterwarnings('ignore')
 
 
 # Settings
-runcore=10            # 运行核数
-
+runcore=6            # 运行核数
 dt=100 # ps
-
 tprpath="1ebz/topol.tpr"    # provide tpr or tpr dump file(.out)
 indexpath="1ebz/index.ndx"
 xtcpath="1ebz/traj3.xtc"
-
-
 # 如果提供了蛋白配体组名，则不使用组index
 # 如果使用组index，则将组名改为空("")
 ligidx=2   
 proidx=1
-
 liggn=""      # 配体组名
 progn=""      # 蛋白组名
 
@@ -664,9 +659,8 @@ print apolEnergy {apollig} end
             apbs.write(pe)
             apbs.close()
             ftlist.append(ft)
-		
-	    	Atomcoord=Atomcoord[comlist]  # 过渡 有几率出错 当使用未处理轨迹时，因原子数过大，数组可能因需要内存过大而无法创建
-	
+
+            Atomcoord=Atomcoord[comlist]
             TmpArr=np.tile(Atomcoord,Atomcoord.shape[0])-Atomcoord.flatten()
             TmpArr=TmpArr.reshape(Atomcoord.shape[0],Atomcoord.shape[0],3)
             D=np.linalg.norm(TmpArr,axis=2)
@@ -1093,7 +1087,7 @@ print apolEnergy {apollig} end
     print(ptable,"\n")
 
     print("+","-"*80,"+")
-    print("  Calculated Bing Energy is {} ± {} kJ/mol.".format(totalPBSA["MM-PBSA"].iloc[-2],totalPBSA["MM-PBSA"].iloc[-1]))
+    print("  Calculated Bing Energy is {} ± {} kJ/mol.".format(totalPBSA["dG"].iloc[-2],totalPBSA["dG"].iloc[-1]))
     print("+","-"*80,"+","\n")
 
     totalendtime=datetime.now().replace(microsecond=0)
