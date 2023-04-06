@@ -19,6 +19,9 @@ warnings.filterwarnings('ignore')
 # Settings
 runcore=6            # 运行核数
 dt=100 # ps
+startt= 5000 # 开始时间ps
+endt= 10000 # 结束时间 ps
+
 tprpath="1ebz/topol.tpr"    # provide tpr or tpr dump file(.out)
 indexpath="1ebz/index.ndx"
 xtcpath="1ebz/traj3.xtc"
@@ -28,6 +31,15 @@ ligidx=2
 proidx=1
 liggn=""      # 配体组名
 progn=""      # 蛋白组名
+
+
+gridType=1			# 格点大小 grid (0:GMXPBSA 1:psize)
+cfac=3				# 分子尺寸到粗略格点的放大系数 # Factor to expand mol-dim to get coarse grid dim
+fadd=10				# 分子尺寸到细密格点的增加值(A) # Amount added to mol-dim to get fine grid dim (A)
+df=0.5				# 细密格点间距(A) The desired fine mesh spacing (A)
+gamma=0.02267788
+offset=3.84928
+precision=4          # 保留小数位数
 
 
 # elec
@@ -63,16 +75,7 @@ agridx=0.1
 agridy=0.1
 agridz=0.1
 
-gridType=1			# 格点大小 grid (0:GMXPBSA 1:psize)
 
-cfac=3				# 分子尺寸到粗略格点的放大系数
-					# Factor to expand mol-dim to get coarse grid dim
-fadd=10				# 分子尺寸到细密格点的增加值(A)
-					# Amount added to mol-dim to get fine grid dim (A)
-df=0.5				# 细密格点间距(A) The desired fine mesh spacing (A)
-gamma=0.02267788
-offset=3.84928
-precision=4          # 保留小数位数
 E0=8.854187817E-12   # 真空介电常数 F/m
 KB=1.380649E-23      # 玻尔兹曼常数 J/K
 EE=1.602176634E-19   # 电子电量 C
@@ -527,7 +530,7 @@ if __name__=="__main__":
     resInfo=total.loc[prolistrick,['resid','resname']]
 
     for i in traj.trajectory:
-        if i.time%dt==0:
+        if i.time%dt==0 and (i.time>=startt and i.time<=endt) :
             ft=str(traj.trajectory.time/1000)
             os.system("mkdir _{}".format(ft))
             # test MM
