@@ -1,0 +1,66 @@
+use xdrfile::*;
+
+
+struct Coords{
+    atoms:u64,
+    frame:u64,
+    step:f64,
+    coords: vec![],
+    box_vec: vec![],
+}
+
+
+
+pub fn xtc(xtcfile:&str) -> Result<()> {
+    // 读取轨迹
+    // XTCTrajectory::open
+    //              ::open_read
+    //              ::open_append
+    //              ::open_write
+    //              ::tell
+    let mut trj = XTCTrajectory::open_read(xtcfile)?;
+
+
+    let 
+    // 读取轨迹中的所有原子
+    let  = trj.get_num_atoms()?;
+
+    println!("The system contains {} atoms!",num_atoms );
+
+    // Frame对象用于读取轨迹，不需要实例化数据矩阵
+    // 根据原子数初始化一个储存数据的矩阵frame
+    let mut frame = Frame::with_len(num_atoms);
+    
+    // 读取第一帧轨迹
+    trj.read(&mut frame)?;
+    // 读取帧轨迹某个原子坐标 frame.coords[atmidx]
+    println!("The First atom coords: {:#?}",frame.coords[0]);
+    // 打印所在帧
+    println!("Frame: {}",frame.step);
+    // 打印帧长度，即帧所含原子数
+    // Frame::len(&mut frame);
+    // Frame::num_atoms(&mut frame)
+    println!("Frame Length: {}",frame.len());
+    // 打印当前模拟时间
+    println!("Frame time: {}",frame.time);
+    // 打印盒子大小
+    println!("Box size: {:?}",frame.box_vector );
+    println!("Box size: x: {} y: {} z: {}",frame.box_vector[0][0],frame.box_vector[1][1],frame.box_vector[2][2] );
+    
+    // 只保留需要的原子坐标
+    let filter: Vec<usize>=vec![0,1,2];
+    let mut new_frame=frame.clone();
+    new_frame.filter_coords(&filter);
+    println!("{:?}",new_frame.coords);
+
+
+    // 循环读取轨迹
+    // for (idx,result) in trj.into_iter().enumerate(){
+    //     let frame=result?;
+    //     println!("{}",frame.time);
+    //     println!("{}",idx );
+    //     println!("{}",frame.step);
+    // }
+
+    Ok(())
+}
