@@ -25,7 +25,7 @@ for line in lines:
         box.append(re.findall(re.compile(r"=\{([\,\s\+\-e\.0-9]+)\}"),lines[lines.index(line)+3])[0].split(","))
 totalatom={}
 for i,j in enumerate(molblockstart):
-    totalatom[re.findall(re.compile(r"\s[0-9]+\s\"([0-9a-zA-Z\-\_\+]+)\""),lines[j+1])[0]]=re.findall(re.compile(r"\s=\s([0-9]+)"),lines[j+2])[0]
+    totalatom[re.findall(re.compile(r"\s[0-9]+\s\"([0-9a-zA-Z\s\-\_\+]+)\""),lines[j+1])[0]]=re.findall(re.compile(r"\s=\s([0-9]+)"),lines[j+2])[0]
     
     
 # 3.read coord
@@ -49,8 +49,8 @@ charge=re.compile(r"q=([\s\.0-9e\+\-]+)")
 adx=re.compile(r"atom\[([\s0-9]+)")
 resid=re.compile(r"resind=([\s0-9\+\-]+)")
 atn=re.compile(r"atomnumber=([\s0-9\+\-]+)")
-atomname=re.compile(r"{name=\"([A-Za-z0-9\*\_]+)\"")
-atomtype=re.compile(r"{name=\"([A-Za-z0-9\*\_]+)\",")
+atomname=re.compile(r"{name=\"([A-Za-z0-9\*\'\_]+)\"")
+atomtype=re.compile(r"{name=\"([A-Za-z0-9\*\'\_]+)\",")
 residuestart=[]
 residx_tmp=0
 for line in lines:
@@ -107,6 +107,8 @@ total=pd.concat([info,coord],axis=1)
 total.insert(loc=0,column="index",value=np.arange(1,total.shape[0]+1))
 total[["functype","atomidx","resid","atomnumber"]]=total[["functype","atomidx","resid","atomnumber"]].apply(pd.to_numeric)
 total[["mass","charge","x","y","z"]]=total[["mass","charge","x","y","z"]].astype(float)
+# 修复了超过99999重新标号
+total["index"]=total["index"].apply(lambda x: x-100000 if x>99999 else x)
 
 # 6. output
 fp=open("output.gro","w")
