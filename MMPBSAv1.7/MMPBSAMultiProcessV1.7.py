@@ -239,7 +239,7 @@ end
 
 
 def apbsrun(ft):
-    os.system("cd _{} && apbs {}.apbs > apbs_{}.out && cd ..".format(ft,str(ft),ft))
+    os.system("cd _{} && apbs {}.apbs > apbs_{}.out 2>&1 && cd ..".format(ft,str(ft),ft))
 
 # 用于单独保存子图的函数
 def save_subfig(fig,ax,fig_name):
@@ -254,7 +254,7 @@ if __name__=="__main__":
     
     # 读取蛋白-配体体系tpr文件
     if tprpath.strip().split(".")[-1]=="tpr":
-        os.system("gmx dump -s {} > tpr.out".format(tprpath))
+        os.system("gmx dump -s {} -quiet > tpr.out".format(tprpath))
         tprpath="tpr.out"
     elif tprpath.strip().split(".")[-1]=="out":
         tprpath=tprpath
