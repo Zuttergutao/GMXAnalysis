@@ -381,8 +381,8 @@ if __name__=="__main__":
     adx=re.compile(r"atom\[([\s0-9]+)")
     resid=re.compile(r"resind=([\s0-9\+\-]+)")
     atn=re.compile(r"atomnumber=([\s0-9\+\-]+)")
-    atomname=re.compile(r"{name=\"([A-Za-z\'0-9\*\_]+)\"")
-    atomtype=re.compile(r"{name=\"([A-Za-z0-9\=\*\_]+)\",")
+    atomname=re.compile(r"{name=\"([A-Za-z\+\-\'0-9\*\_]+)\"")
+    atomtype=re.compile(r"{name=\"([A-Za-z0-9\+\-\=\*\_]+)\",")
     residuestart=[]
     residx_tmp=0
     for line in lines:
