@@ -195,28 +195,53 @@ for i in range(allxyz.shape[1]):
     atomcoord_mean.append([np.mean(x),np.mean(y),np.mean(z)])
 delta0=np.array(atomcoord_mean)   
 
+## new method to calculate the covariance and correlation matrix
+## Two methods produce numbers with deviation less than 0.00001
+offset = allxyz
+# print(offset.shape) # (10001, 130, 3)
+# np.cov for x, y, and z, then sum
+## 这里对数据重新处理了一下，把坐标的三维拆开，然后重新处理成(原子，时间帧)的形式
+## 例如offset_X是包含了130个列表的变量，每一个列表里面保存了一个原子的X坐标随时间变化的10001个数据
+offset_X, offset_Y, offset_Z = offset[:, :, 0].T, offset[:, :, 1].T, offset[:, :, 2].T
+# print(offset_X.shape) # (130, 10001)
+## 对每一个维度的数据做协方差矩阵，得到的是一个（130，130）的矩阵
+## 也即每一个维度上，原子之间的协方差矩阵
+# np.cov for x, y, and z, then sum
+covariance_X = np.cov(offset_X, ddof=0) # /n not /(n‐1)
+covariance_Y = np.cov(offset_Y, ddof=0)
+covariance_Z = np.cov(offset_Z, ddof=0)
+## 将三个维度相加，得到最终的协方差矩阵
+covariance = covariance_X + covariance_Y + covariance_Z
+# print(covariance_Z.shape) # （130， 130）
+# print(covariance.shape) # （130， 130）
+## 将协方差矩阵转换为互相关矩阵
+corr=np.zeros((atom_number,atom_number))
+for i in range(0,atom_number):
+    for j in range(0,atom_number):
+        corr[i,j] = covariance[i,j]/np.sqrt(covariance[i,i]*covariance[j,j])
+
 # 计算差值         
 # 以平均原子坐标为基准
 # np.set_printoptions(precision=5)
-delta=allxyz-delta0
-delta_r=np.empty((delta.shape[1],delta.shape[1],delta.shape[0],))
-for n in range(delta.shape[0]):
-    for i in range(delta.shape[1]):
-        for j in range(delta.shape[1]):
-            delta_r[i,j,n]=np.dot(delta[n][i][:],delta[n][j][:])
-cij=delta_r           
+# delta=allxyz-delta0
+# delta_r=np.empty((delta.shape[1],delta.shape[1],delta.shape[0],))
+# for n in range(delta.shape[0]):
+#     for i in range(delta.shape[1]):
+#         for j in range(delta.shape[1]):
+#             delta_r[i,j,n]=np.dot(delta[n][i][:],delta[n][j][:])
+# cij=delta_r           
 
-# 先时间平均
-deltai=np.empty((delta.shape[1]))
-for i in range(delta.shape[1]):
-    deltai[i]=np.sqrt(np.mean(cij[i,i,:]))
+# # 先时间平均
+# deltai=np.empty((delta.shape[1]))
+# for i in range(delta.shape[1]):
+#     deltai[i]=np.sqrt(np.mean(cij[i,i,:]))
         
-Cij=np.empty((delta.shape[1],delta.shape[1]))
-for i in range(delta.shape[1]):
-    for j in range(delta.shape[1]):
-        Cij[i,j]=np.mean(cij[i,j,:])/(deltai[i]*deltai[j])
+# Cij=np.empty((delta.shape[1],delta.shape[1]))
+# for i in range(delta.shape[1]):
+#     for j in range(delta.shape[1]):
+#         Cij[i,j]=np.mean(cij[i,j,:])/(deltai[i]*deltai[j])
         
-Cout=Cij
+Cout=corr
 
 
 # 使用contour+cp=ontour绘图
