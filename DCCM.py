@@ -1,11 +1,13 @@
 import pandas as pd
 import numpy as np
-import math
 from MDAnalysis.coordinates.XTC import XTCReader
 import matplotlib.pyplot as plt
 import matplotlib
 import sys
+import warnings
 
+warnings.simplefilter("ignore")
+ 
 class Traj:
     "Reads trajectory from .xtc file"
                 
@@ -215,9 +217,9 @@ covariance = covariance_X + covariance_Y + covariance_Z
 # print(covariance_Z.shape) # （130， 130）
 # print(covariance.shape) # （130， 130）
 ## 将协方差矩阵转换为互相关矩阵
-corr=np.zeros((atom_number,atom_number))
-for i in range(0,atom_number):
-    for j in range(0,atom_number):
+corr=np.zeros((allxyz.shape[1],allxyz.shape[1]))
+for i in range(0,allxyz.shape[1]):
+    for j in range(0,allxyz.shape[1]):
         corr[i,j] = covariance[i,j]/np.sqrt(covariance[i,i]*covariance[j,j])
 
 # 计算差值         
@@ -241,7 +243,7 @@ for i in range(0,atom_number):
 #     for j in range(delta.shape[1]):
 #         Cij[i,j]=np.mean(cij[i,j,:])/(deltai[i]*deltai[j])
         
-Cout=corr
+Cij=corr
 
 
 # 使用contour+cp=ontour绘图
