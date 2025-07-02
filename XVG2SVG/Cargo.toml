@@ -1,0 +1,10 @@
+[package]
+name = "Quill_svg"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+quill = "0.1.0"
+clap = { version = "3", features = ["derive"] }
+textplots = "0.8.7"
+terminal_size = "0.1"
