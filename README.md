@@ -58,8 +58,8 @@ It only works for proteins which contains less than 500 amino acids.
 `julia ss.jl xx.dssp`
 
 ## XVG2SVG
-Convert XVG file to SVG file 
-Additionally, it supports outputting ASCII plots to the terminal, making it convenient for users to analyze RMSD/RMSF files on the cluster.
+Convert XVG file to SVG file    
+**Additionally, it supports outputting ASCII plots to the terminal, making it convenient for users to analyze RMSD/RMSF files on the cluster.**
 
 
 
